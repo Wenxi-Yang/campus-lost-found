@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "database": "MySQL 8.0.18 isolated instance",
+  "mysql_port": 13306,
+  "app_port": 18082,
+  "verified": [
+    "schema creation",
+    "seed SQL twice without duplicates",
+    "JWT login on MySQL",
+    "publisher-confirmed claim approval",
+    "item finished in same database",
+    "student result query",
+    "notice publisher/item/category joins"
+  ]
+}

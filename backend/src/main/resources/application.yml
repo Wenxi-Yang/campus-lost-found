@@ -1,0 +1,41 @@
+server:
+  port: 8081
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:mysql}
+  jackson:
+    time-zone: Asia/Shanghai
+    date-format: yyyy-MM-dd HH:mm:ss
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+app:
+  bootstrap-admin-password: ${ADMIN_PASSWORD:}
+  demo: false
+  bcrypt-strength: ${BCRYPT_STRENGTH:10}
+  jwt-secret: ${JWT_SECRET:}
+  jwt-cookie-secure: ${JWT_COOKIE_SECURE:false}
+---
+spring:
+  config:
+    activate:
+      on-profile: mysql
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/campus_lost_found?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+---
+spring:
+  config:
+    activate:
+      on-profile: demo
+  datasource:
+    url: jdbc:h2:file:./data/campus;MODE=MySQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+app:
+  demo: true
+  bootstrap-admin-password: Admin12345

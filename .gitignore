@@ -1,0 +1,13 @@
+**/target/
+frontend/node_modules/
+frontend/dist/
+.maven-repository/
+backend/data/
+*.log
+.idea/workspace.xml
+
+.env
+.env.*
+!.env.example
+**/.local/
+release/*.war

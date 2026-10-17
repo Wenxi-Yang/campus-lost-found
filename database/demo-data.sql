@@ -1,0 +1,20 @@
+-- 仅用于本地演示或隔离验收库；不要在真实用户数据上导入演示账号。
+-- 先执行 init-mysql.sql 或由应用创建表；当前数据库须已选中。
+START TRANSACTION;
+INSERT INTO app_user(student_number,name,phone,password,role) SELECT 'admin','校园服务中心','13900000000','$2a$10$ooyKBm4jTh7qqFjcoDg7UeiMq8/AX16Jwf7ikiw144HRzbv22Yr2i','admin' WHERE NOT EXISTS(SELECT 1 FROM app_user WHERE student_number='admin' OR phone='13900000000');
+INSERT INTO app_user(student_number,name,phone,password,role) SELECT '20260001','林同学','13800000001','$2a$10$BxF7NkMdF5Kv5DeVQwcPKuBhTRu6h15dniFaOGZF3OcAOOqySNbwm','user' WHERE NOT EXISTS(SELECT 1 FROM app_user WHERE student_number='20260001' OR phone='13800000001');
+INSERT INTO app_user(student_number,name,phone,password,role) SELECT '20260002','周同学','13800000002','$2a$10$BxF7NkMdF5Kv5DeVQwcPKuBhTRu6h15dniFaOGZF3OcAOOqySNbwm','user' WHERE NOT EXISTS(SELECT 1 FROM app_user WHERE student_number='20260002' OR phone='13800000002');
+INSERT INTO category(name,sort_no,enabled) SELECT '证件卡片',0,TRUE WHERE NOT EXISTS(SELECT 1 FROM category WHERE name='证件卡片');
+INSERT INTO category(name,sort_no,enabled) SELECT '电子数码',1,TRUE WHERE NOT EXISTS(SELECT 1 FROM category WHERE name='电子数码');
+INSERT INTO category(name,sort_no,enabled) SELECT '学习用品',2,TRUE WHERE NOT EXISTS(SELECT 1 FROM category WHERE name='学习用品');
+INSERT INTO category(name,sort_no,enabled) SELECT '生活用品',3,TRUE WHERE NOT EXISTS(SELECT 1 FROM category WHERE name='生活用品');
+INSERT INTO category(name,sort_no,enabled) SELECT '衣物配饰',4,TRUE WHERE NOT EXISTS(SELECT 1 FROM category WHERE name='衣物配饰');
+INSERT INTO category(name,sort_no,enabled) SELECT '其他物品',5,TRUE WHERE NOT EXISTS(SELECT 1 FROM category WHERE name='其他物品');
+INSERT INTO item(user_id,category_id,title,type,location,occurred_at,description,contact,status) SELECT u.id,c.id,'演示 黑色长柄雨伞','found','图书馆',CURRENT_TIMESTAMP,'黑色长柄雨伞，手柄有蓝色贴纸。','13800000001','open' FROM app_user u JOIN category c ON c.name='生活用品' WHERE u.student_number='20260001' AND NOT EXISTS(SELECT 1 FROM item WHERE title='演示 黑色长柄雨伞');
+INSERT INTO item(user_id,category_id,title,type,location,occurred_at,description,contact,status) SELECT u.id,c.id,'演示 校园卡','found','食堂',CURRENT_TIMESTAMP,'校园卡已交服务台，认领时说明姓名和院系。','13800000001','open' FROM app_user u JOIN category c ON c.name='证件卡片' WHERE u.student_number='20260001' AND NOT EXISTS(SELECT 1 FROM item WHERE title='演示 校园卡');
+INSERT INTO item(user_id,category_id,title,type,location,occurred_at,description,contact,status) SELECT u.id,c.id,'演示 无线耳机','lost','操场',CURRENT_TIMESTAMP,'白色无线耳机，充电盒贴有星形贴纸。','13800000001','open' FROM app_user u JOIN category c ON c.name='电子数码' WHERE u.student_number='20260001' AND NOT EXISTS(SELECT 1 FROM item WHERE title='演示 无线耳机');
+INSERT INTO item(user_id,category_id,title,type,location,occurred_at,description,contact,status) SELECT u.id,c.id,'演示 高等数学课本','lost','教学楼',CURRENT_TIMESTAMP,'课本封面内侧有姓名标签。','13800000001','open' FROM app_user u JOIN category c ON c.name='学习用品' WHERE u.student_number='20260001' AND NOT EXISTS(SELECT 1 FROM item WHERE title='演示 高等数学课本');
+INSERT INTO claim(item_id,user_id,description,publisher_status,publisher_reply,publisher_confirmed_at) SELECT i.id,u.id,'能提供独有特征及物品归属证明。','confirmed','已核对手柄贴纸，等待管理员审核',CURRENT_TIMESTAMP FROM item i JOIN app_user u ON u.student_number='20260002' WHERE i.title='演示 黑色长柄雨伞' AND NOT EXISTS(SELECT 1 FROM claim c WHERE c.item_id=i.id AND c.user_id=u.id);
+INSERT INTO claim(item_id,user_id,description,publisher_status,publisher_reply,publisher_confirmed_at) SELECT i.id,u.id,'能提供独有特征及物品归属证明。','pending',NULL,NULL FROM item i JOIN app_user u ON u.student_number='20260002' WHERE i.title='演示 校园卡' AND NOT EXISTS(SELECT 1 FROM claim c WHERE c.item_id=i.id AND c.user_id=u.id);
+INSERT INTO notice(publisher_id,item_id,category_id,title,content,kind,published_at,starts_at) SELECT u.id,i.id,i.category_id,'演示 招领提醒','请核对物品并提交特征证明，经招领人确认后转交管理员审核。','reminder',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP FROM app_user u JOIN item i ON i.title='演示 黑色长柄雨伞' WHERE u.student_number='admin' AND NOT EXISTS(SELECT 1 FROM notice WHERE title='演示 招领提醒');
+COMMIT;
