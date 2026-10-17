@@ -1,0 +1,21 @@
+{
+  "base": "http://127.0.0.1:18083",
+  "purpose": "isolated demo environment; actual browser screenshots",
+  "pageErrors": [],
+  "files": [
+    "01-login.png",
+    "02-register.png",
+    "03-home.png",
+    "04-publish.png",
+    "05-detail.png",
+    "06-pending.png",
+    "07-incoming.png",
+    "08-admin-review.png",
+    "09-result.png",
+    "10-users.png",
+    "11-categories.png",
+    "12-notices.png",
+    "13-notice-editor.png",
+    "14-notice-page.png"
+  ]
+}
